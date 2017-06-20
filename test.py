@@ -3,6 +3,29 @@ from PyQt5.QtWidgets import QWidget, QApplication, QLabel
 from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5.QtCore import Qt, QPoint
 
+mouse_pos = [0, 0]
+
+#class Point(QWidget):
+#    def __init__(self, point1, point2):
+#        self.p1 = point1
+#        self.p2 = point2
+#
+#    def paintEvent(self,event):
+#        print('paint')
+#        global mouse_pos
+#        # mouse_pos = self.mousePressEvent()
+#        # print('paintEvent: ', mouse_pos)
+#        qp = QPainter()
+#        qp.begin(self)
+#        print('drawPoints')
+#        qp.setPen(Qt.red)
+#        size = self.size()
+#        print('drawPoints', mouse_pos)
+#        x = self.mouse_pos[0]
+#        y = self.mouse_pos[1]
+#        qp.drawPoint(x, y)
+#        # self.drawPoints(qp)
+#        qp.end()
 
 class Example(QWidget):
 
@@ -21,24 +44,31 @@ class Example(QWidget):
         greeting_text = QLabel('Welcome', self)
         greeting_text.move(80, 50)
 
-
     def paintEvent(self, e):
+        global mouse_pos
         print('paint')
         #mouse_pos = self.mousePressEvent()
         #print('paintEvent: ', mouse_pos)
         qp = QPainter()
         qp.begin(self)
-        self.drawPoints(qp)
-        qp.end()
-
-
-    def drawPoints(self, qp):
         print('drawPoints')
         qp.setPen(Qt.red)
-        size = self.size()*15
-        x = 140
-        y = 80
+        size = self.size()
+        print('drawPoints', mouse_pos)
+        x = mouse_pos[0]
+        y = mouse_pos[1]
         qp.drawPoint(x, y)
+        #self.drawPoints(qp)
+        qp.end()
+
+    #def drawPoints(self, qp):
+    #    print('drawPoints')
+    #    qp.setPen(Qt.red)
+    #    size = self.size()*15
+    #    print('drawPoints', mouse_pos)
+    #    x = mouse_pos[0]
+    #    y = mouse_pos[1]
+    #    qp.drawPoint(x, y)
 
     # mouse click position
     def mousePressEvent(self, e):
@@ -47,14 +77,13 @@ class Example(QWidget):
         if e.button() == Qt.LeftButton:
 
             slice_e_pos = re.findall("[-0-9]+", str(e.pos()))
+            global mouse_pos
             mouse_pos = [int(slice_e_pos[1]), int(slice_e_pos[2])]
             print('mouse_pos: ', mouse_pos)
             print('')
+            #newPoint = Point(QPoint(mouse_pos[0], mouse_pos[1]))
 
-            #return mouse_pos
             #self.paintEvent(e, mouse_pos)
-    #print(mouse_pos)
-
 
 if __name__ == '__main__':
 
