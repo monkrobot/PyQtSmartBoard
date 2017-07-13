@@ -1,8 +1,11 @@
 import sys
-from PyQt5.QtWidgets import (QMainWindow, QAction, qApp, QWidget, QToolTip, QPushButton, QApplication, QTextEdit, QLineEdit,
-                             QGridLayout, QMessageBox, QLabel, QFrame, QColorDialog, QFileDialog)
-from PyQt5.QtGui import (QIcon, QFont, QColor)
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtWidgets import (QMainWindow, QAction, qApp, QWidget, QToolTip, QPushButton, QApplication, QTextEdit,
+                             QLineEdit, QGridLayout, QMessageBox, QLabel, QFrame, QColorDialog, QFileDialog)
+from PyQt5.QtGui import (QIcon, QFont, QPainter, QColor, QPen, QImage, QBrush)
+from PyQt5.QtCore import (QCoreApplication, Qt, QPoint)
+
+colourLine = "#265F00"
+print(colourLine)
 
 # Menu
 class Menu(QMainWindow):
@@ -54,6 +57,38 @@ class Board(QWidget):
 
         self.initUI() #GUI developing
 
+
+
+    def mouseMoveEvent(self, event):
+        # super().mouseMoveEvent(event)
+        global colourLine
+
+        painter = QPainter(self._im)
+        painter.setPen(QPen(QColor(str(colourLine)), 1, Qt.SolidLine, Qt.RoundCap))
+        painter.setBrush(QBrush(QColor(str(colourLine)), Qt.SolidPattern))
+        painter.drawEllipse(event.pos(), 10, 10)
+
+        # Перерисуемся
+        self.update()
+
+    def mousePressEvent(self, event):
+        # super().mousePressEvent (event)
+        global colourLine
+
+        painter = QPainter(self._im)
+        painter.setPen(QPen(QColor(str(colourLine)), 1, Qt.SolidLine, Qt.RoundCap))
+        painter.setBrush(QBrush(QColor(str(colourLine)), Qt.SolidPattern))
+        painter.drawEllipse(event.pos(), 10, 10)
+
+        # Перерисуемся
+        self.update()
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+
+        painter = QPainter(self)
+        painter.drawImage(0, 0, self._im)
+
     def printTest(self):
         print('delbtn works')
 
@@ -61,13 +96,17 @@ class Board(QWidget):
         QToolTip.setFont(QFont('SansSerif', 10))
 
         self.c = Menu()
+        self.c.move(100, 100)
+
+        self._im = QImage(1700, 1080, QImage.Format_ARGB32)
+        self._im.fill(QColor("white"))
 
         #Typing of text
         textEdit = QTextEdit()
         #self.setCentralWidget(textEdit)
 
         #greeting text with absolute position
-        greeting_text = QLabel('Welcome', self)
+        #greeting_text = QLabel('Welcome', self)
         #greeting_text.move(980, 50)
 
         #popup help-text
@@ -78,48 +117,56 @@ class Board(QWidget):
         self.delbtn.setToolTip('This is a Delete') # Popup help text
         self.delbtn.clicked.connect(self.printTest)
         self.delbtn.resize(self.delbtn.sizeHint())
-        #delbtn.move(200, 50)
+        self.delbtn.move(1750, 10)
 
         #Quit button
         self.quitbtn = QPushButton('Quit', self)
         self.quitbtn.clicked.connect(QCoreApplication.instance().quit)
         self.quitbtn.setToolTip('This is a Quit')
         self.quitbtn.resize(self.quitbtn.sizeHint())
-        #quitbtn.move(200, 100)
+        self.quitbtn.move(1750, 50)
 
         #Color Dialog. If this button will be without 'self', then col will not change color
-        col = QColor(0, 0, 0)
+        col = QColor(24, 15, 65)
         self.colbtn = QPushButton('Dialog', self)
-        #colbtn.move(20, 20)
+        self.colbtn.move(1750, 90)
 
         self.colbtn.clicked.connect(self.showColorDialog)
 
         self.frm = QFrame(self)
         self.frm.setStyleSheet("QWidget { background-color: %s }" % col.name())
-        #frm.setGeometry(130, 22, 100, 100)
+        print(col.name())
+        self.frm.setGeometry(1750, 125, 125, 30)
 
-        titleEdit = QLineEdit()
+        #self.update()
+
+        global colourLine
+        colourLine = col.name()
+
+        #self.update()
+
+        #titleEdit = QLineEdit()
         #titleEdit.move(100, 50)
 
-        #LineGrid
-        grid = QGridLayout()
-        grid.setSpacing(10)
-
-        grid.addWidget(greeting_text, 1, 0, 1, 1)
-        grid.addWidget(titleEdit, 2, 1)
-
-        grid.addWidget(self.delbtn, 3, 0)
-        grid.addWidget(self.quitbtn, 3, 1)
-
-        grid.addWidget(self.colbtn, 4, 0)
-        grid.addWidget(self.frm, 4, 1)
-
-        grid.addWidget(textEdit, 6, 1)
-
-        self.setLayout(grid)
+        ##LineGrid
+        #grid = QGridLayout()
+        #grid.setSpacing(10)
+#
+        #grid.addWidget(self.c, 1, 0, 1, 1)
+        #grid.addWidget(titleEdit, 2, 1)
+#
+        #grid.addWidget(self.delbtn, 3, 1)
+        #grid.addWidget(self.quitbtn, 4, 1)
+#
+        #grid.addWidget(self.colbtn, 4, 1)
+        #grid.addWidget(self.frm, 5, 1)
+#
+        #grid.addWidget(textEdit, 6, 1)
+#
+        #self.setLayout(grid)
 
         #Window geometry
-        self.setGeometry(0, 40, 500, 500)
+        self.setFixedSize(1920, 1080)
         self.setWindowTitle('SmartBoard')
         self.setWindowIcon(QIcon('images/table.png')) #icon for application
 
@@ -146,5 +193,8 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     smartboard = Board()
+    fileSystem = Menu()
+
+    print(colourLine)
 
     sys.exit(app.exec_())

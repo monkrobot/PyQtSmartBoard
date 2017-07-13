@@ -8,18 +8,30 @@ class Widget(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setFixedSize(300, 300)
+        self.setFixedSize(1000, 1000)
 
-        self._im = QImage(self.width(), self.height(), QImage.Format_ARGB32)
-        #self._im.fill(QColor("white"))
+        self._im = QImage(300, 300, QImage.Format_ARGB32)
+        self._im.fill(QColor("white"))
 
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
+    def mouseMoveEvent(self, event):
+        #super().mouseMoveEvent(event)
 
 
         painter = QPainter(self._im)
-        painter.setPen(QPen(QColor("#000000"), 1, Qt.SolidLine, Qt.RoundCap))
-        painter.setBrush(QBrush(QColor("#fc6c2d"), Qt.SolidPattern))
+        painter.setPen(QPen(QColor("#234532"), 1, Qt.SolidLine, Qt.RoundCap))
+        painter.setBrush(QBrush(QColor("#234532"), Qt.SolidPattern))
+        painter.drawEllipse(event.pos(), 10, 10)
+
+        # Перерисуемся
+        self.update()
+
+    def mousePressEvent(self, event):
+        # super().mousePressEvent (event)
+
+
+        painter = QPainter(self._im)
+        painter.setPen(QPen(QColor("#234532"), 1, Qt.SolidLine, Qt.RoundCap))
+        painter.setBrush(QBrush(QColor("#234532"), Qt.SolidPattern))
         painter.drawEllipse(event.pos(), 10, 10)
 
         # Перерисуемся
